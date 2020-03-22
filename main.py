@@ -1,4 +1,4 @@
-import psycopg2, datetime
+import psycopg2, datetime, json
 
 def query_uplink_data(cursor):
     # Query the data from the device_up table
@@ -12,7 +12,7 @@ def query_uplink_data(cursor):
     return
 
 def fake_uplink_data(conn, cursor, device_id):
-    id = "e671fc03-43f3-49fa-9e7d-8479c8ef2e21"
+    id = "e671fc03-43f3-49fa-9e7d-8479c8ef2e21" # Stole this from the database
     # Add fake data from the device_up table
     time = datetime.datetime(2020, 3, 1, 17, 18, 00, 00000, tzinfo=psycopg2.tz.FixedOffsetTimezone(offset=360, name=None)) # TODO update as we go
     device_name = "test" + device_id
@@ -37,6 +37,8 @@ def fake_uplink_data(conn, cursor, device_id):
         #                        VALUES(%s, %d, %s, %d, %s, %d, %d, %d, %d, %d, )"""
         cursor.execute(sql, (id, time, device_id, device_name, application_id, application_name, frequency, dr, adr, f_cnt, f_port, tags, data, rx_info, object_b))
     except psycopg2.Error as e:
+        print("Error:")
+        # TODO probably need a better print of error....
         print(e.pgerror)
 
     # Commit the new data to the database
